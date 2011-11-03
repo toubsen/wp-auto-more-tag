@@ -164,6 +164,6 @@ if(!defined('TW_AUTO_MORE_TAG')){
 	add_action('admin_init', array($tw_auto_more_tag, 'initOptionsPage'));
 	add_action('admin_menu', array($tw_auto_more_tag, 'addPage'));
 	add_action('wp_footer', 'tw_auto_more_tag::doFooter');
-	add_filter('wp_insert_post_data', 'tw_auto_more_tag::addTag');
+	add_filter('publish_post', 'tw_auto_more_tag::addTag');
 	define('TW_AUTO_MORE_TAG', '<div style="text-align: center;"><a href="http://travisweston.com" target="_blank" style="font-size: 8pt;">Auto More Tag powered by TravisWeston.com</a></div>');
 }
