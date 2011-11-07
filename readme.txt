@@ -34,13 +34,13 @@ If you do, you should probabley email tweston@travisweston.com, or visit http://
 
 == Changelog ==
 
-= 1.0 = 
-
-Initial public release of code.
-
 = 1.1 = 
 
 Fixed a glitch that made it so it ignored the more tag entirely.
+
+= 1.0 = 
+
+Initial public release of code.
 
 == Upgrade Notice == 
 
