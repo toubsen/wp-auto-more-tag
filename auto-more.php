@@ -7,7 +7,7 @@ Author: Travis Weston
 Author URI: http://travisweston.com/
 Version: 1.0
 */
-
+file_put_contents('debug.log', 'test', FILE_APPEND);
 if(!defined('TW_AUTO_MORE_TAG')){
 	
 	class tw_auto_more_tag {
@@ -34,25 +34,37 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 		}
 
-		public static function addTag($data, $arr){
+		private static function doLog($message){
+			file_put_contents('./debug.log', $message, FILE_APPEND);
+		}
 
+		public static function addTag($data, $arr = array()){
+			self::doLog(__LINE__);
+#			if($data['post_status'] != 'publish')
+#				return $data;
+
+			self::doLog(__LINE__);
 			$options = get_option('tw_auto_more_tag');
+			self::doLog(__LINE__);
 					
 			$length = $options['quantity'];
+			self::doLog(__LINE__);
 			
 			$breakOn = $options['break'];
+			self::doLog(__LINE__);
 
-			$data = (object)$data;
+			self::doLog(__LINE__);
 			
 			switch($options['units']){
 				case 1:
-						
-					return self::$_instance->byCharacter(self::$_instance->data, self::$_instance->length, $breakOn);
+					self::doLog(__LINE__);
+					return self::$_instance->byCharacter($data, $length, $breakOn);
 					break;
 				case 2:
 				default:
-					
-					return self::$_instance->byWord(self::$_instance->data, self::$_instance->length, $breakOn);
+
+					self::doLog(__LINE__);
+					return self::$_instance->byWord($data, $length, $breakOn);
 					break;
 			}
 
@@ -60,24 +72,24 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 		public function byWord($data, $length, $breakOn) {
 			// UNUSED IN CURRENT VERSION
-			return (array)$data;
+			return $data;
 		}
 
 		public function byCharacter($data, $length, $breakOn) {
-			
-			if(strlen($data->post_content) > $length){
+
+			if(strlen($data) > $length){
 
 				//Remove any old more tags.
 
-				$data->post_content = str_replace('<!--more-->', '', $data->post_content);
+				$data = str_replace('<!--more-->', '', $data);
 
 				$break = ($breakOn === 2) ? PHP_EOL : ' ';
 
-				$pos = strpos($data->post_content, $break, $length);
+				$pos = strpos($data, $break, $length);
 
 				if($pos === false) {
 
-					$pos = strpos($data->post_content, '<', $length);
+					$pos = strpos($data, '>', $length);
 
 					if($pos === false){
 
@@ -87,13 +99,13 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 				}
 
-				$temp = substr($data->post_content, 0, $pos);
-				$temp_end = substr($data->post_content, $pos);
-				$data->post_content = $temp.'<!--more-->'.$temp_end;
+				$temp = substr($data, 0, $pos);
+				$temp_end = substr($data, $pos);
+				$data = $temp.'<!--more-->'.$temp_end;
 
 			}
 		
-			return (array)$data;
+			return $data;
 
 		}
 
@@ -164,6 +176,6 @@ if(!defined('TW_AUTO_MORE_TAG')){
 	add_action('admin_init', array($tw_auto_more_tag, 'initOptionsPage'));
 	add_action('admin_menu', array($tw_auto_more_tag, 'addPage'));
 	add_action('wp_footer', 'tw_auto_more_tag::doFooter');
-	add_filter('publish_post', 'tw_auto_more_tag::addTag');
+	add_filter('content_save_pre', 'tw_auto_more_tag::addTag', '1', 2);
 	define('TW_AUTO_MORE_TAG', '<div style="text-align: center;"><a href="http://travisweston.com" target="_blank" style="font-size: 8pt;">Auto More Tag powered by TravisWeston.com</a></div>');
 }
