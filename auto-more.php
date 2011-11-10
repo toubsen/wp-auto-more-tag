@@ -5,7 +5,7 @@ Plugin URI: http://travisweston.com/auto-tag-wordpress-plugin
 Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
 Author: Travis Weston
 Author URI: http://travisweston.com/
-Version: 1.1
+Version: 2.0
 */
 file_put_contents('debug.log', 'test', FILE_APPEND);
 if(!defined('TW_AUTO_MORE_TAG')){
@@ -39,32 +39,32 @@ if(!defined('TW_AUTO_MORE_TAG')){
 		}
 
 		public static function addTag($data, $arr = array()){
-			self::doLog(__LINE__);
-#			if($data['post_status'] != 'publish')
-#				return $data;
 
-			self::doLog(__LINE__);
 			$options = get_option('tw_auto_more_tag');
-			self::doLog(__LINE__);
 					
 			$length = $options['quantity'];
-			self::doLog(__LINE__);
-			
 			$breakOn = $options['break'];
-			self::doLog(__LINE__);
-
-			self::doLog(__LINE__);
 			
+			$shortCode = strpos($data, '[amt_override');
+
+			if($shortCode !== false){
+				return $data;
+			}
+
 			switch($options['units']){
 				case 1:
-					self::doLog(__LINE__);
+					
 					return self::$_instance->byCharacter($data, $length, $breakOn);
 					break;
 				case 2:
 				default:
 
-					self::doLog(__LINE__);
 					return self::$_instance->byWord($data, $length, $breakOn);
+					break;
+
+				case 3:
+					
+					return self::$_instance->byPercent($data, $length, $breakOn);
 					break;
 			}
 
@@ -82,19 +82,13 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				//Remove any old more tags.
 
 				$data = str_replace('<!--more-->', '', $data);
-
 				$break = ($breakOn === 2) ? PHP_EOL : ' ';
-
 				$pos = strpos($data, $break, $length);
-
 				if($pos === false) {
 
 					$pos = strpos($data, '>', $length);
-
 					if($pos === false){
-
 						$pos = $length;
-
 					}
 
 				}
@@ -105,6 +99,35 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 			}
 		
+			return $data;
+
+		}
+
+		public function byPercent($data, $length, $breakon) {
+
+			$lengthOfPost = strlen($data);
+			$start = $lengthOfPost * ($length / 100);
+
+			$data = str_replace('<!--more-->', '', $data);
+			$break = ($breakOn === 2) ? PHP_EOL : ' ';
+			$pos = strpos($data, $break, $start);
+
+			if($pos === false){
+
+				$pos = strpos($data, '>', $start);
+
+				if($pos === false){
+
+					$pos = $start;
+
+				}
+
+			}
+
+			$temp = substr($data, 0, $pos);
+			$temp_end = substr($data, $pos);
+			$data = $temp.'<!--more-->'.$temp_end;
+
 			return $data;
 
 		}
@@ -130,7 +153,7 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				$input['messages']['notices'][] = 'Quantity cannot be less than 0, and has been set to 0.';
 			}
 
-			if($input['units'] != 1){
+			if($input['units'] == 2){
 				$input['messages']['errors'][] = 'This version does not include capabilities for Word seperation. Units has been defaulted to Characters.';
 			}
 
@@ -140,14 +163,22 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				$input['messages']['notices'][] = 'Hard work and determination was put into this plugin. Please be kind, and credit me!';
 			}
 
-			$input['units'] = ((int)$input['units'] == 1) ? 1 : 2;
+			$input['units'] = ((int)$input['units'] == 1) ? 1 : (((int)$input['units'] == 2) ? 2 : 3);
+
 			/*********************************
 			* THIS IS TEMPORARY
 			* ONLY HERE UNTIL WORD COUNT IS IMPLEMENTED
-			**********************************/			
-			$input['units'] = 1;
+			**********************************/
+			if($input['units'] == 2){
+				$input['units'] = 1;
+			}
 
-			if(false && $input['units'] == 1){
+			if($input['units'] == 3 && $input['quantity'] > 100){
+				$input['messages']['notices'][] = 'While using Percentage breaking, you cannot us a number larger than 100%. This field has been reset to 50%.';
+				$input['quantity'] = 50;
+			}
+
+			if($input['units'] == 1){
 				$input['messages']['warnings'][] = 'Using characters is not suggested. The more tag is added to the unfiltered HTML of the post, which means that this tag could cause your HTML to unvalidate.';
 			}			
 			
@@ -169,7 +200,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 		}
 
-
+		#public function manualOverride($atts, $content = null, $code = null){
+		#	#NOT CURRENTLY WORKING
+		#	return '<!--more-->';
+		#}
 	}
 	$tw_auto_more_tag = new tw_auto_more_tag();
 
@@ -177,5 +211,6 @@ if(!defined('TW_AUTO_MORE_TAG')){
 	add_action('admin_menu', array($tw_auto_more_tag, 'addPage'));
 	add_action('wp_footer', 'tw_auto_more_tag::doFooter');
 	add_filter('content_save_pre', 'tw_auto_more_tag::addTag', '1', 2);
+	#add_shortcode('amt_override', array($tw_auto_more_tag, 'manualOverride'));
 	define('TW_AUTO_MORE_TAG', '<div style="text-align: center;"><a href="http://travisweston.com" target="_blank" style="font-size: 8pt;">Auto More Tag powered by TravisWeston.com</a></div>');
 }

@@ -72,10 +72,11 @@ function hasWarnings($messages) {
 				<input name="tw_auto_more_tag[quantity]" id="tw_auto_more_tag[quantity]" value="<?php echo isset($options['quantity']) ? $options['quantity'] : 200; ?>" />
 			</div>
 			<div>
-				<label for="tw_auto_more_tag[units]">Characters or Words?</label>
+				<label for="tw_auto_more_tag[units]">Characters, Words or Percent of Post?</label>
 				<select name="tw_auto_more_tag[units]" id="tw_auto_more_tag[units]">
 					<option value="1" <?php echo ($options['units'] == 1 || !isset($options['units'])) ? 'selected="SELECTED" ' : null; ?>/>Characters
 					<option value="2" <?php echo ($options['units'] == 2) ? 'selected="SELECTED" ' : null; ?>/>Words
+					<option value="3" <?php echo ($options['units'] == 3) ? 'selected="SELECTED" ' : null; ?>/>Percent
 				</select>
 			</div>
 			<div>
