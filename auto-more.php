@@ -5,9 +5,9 @@ Plugin URI: http://travisweston.com/auto-tag-wordpress-plugin
 Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
 Author: Travis Weston
 Author URI: http://travisweston.com/
-Version: 2.0
+Version: 2.1
 */
-file_put_contents('debug.log', 'test', FILE_APPEND);
+
 if(!defined('TW_AUTO_MORE_TAG')){
 	
 	class tw_auto_more_tag {
@@ -19,6 +19,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 		public $data;
 
 		public function __construct() {
+			global $wpdb;
+
+			$this->_db = &$wpdb;
+
 			self::$_instance = $this;
 		}
 
@@ -44,11 +48,13 @@ if(!defined('TW_AUTO_MORE_TAG')){
 					
 			$length = $options['quantity'];
 			$breakOn = $options['break'];
-			
-			$shortCode = strpos($data, '[amt_override');
 
-			if($shortCode !== false){
-				return $data;
+			$moreTag = strpos($data, '[amt_override]');
+
+			if($moreTag !== false && $options['ignore_man_tag'] != true){
+				
+				return self::$_instance->manual($data);
+
 			}
 
 			switch($options['units']){
@@ -67,6 +73,15 @@ if(!defined('TW_AUTO_MORE_TAG')){
 					return self::$_instance->byPercent($data, $length, $breakOn);
 					break;
 			}
+
+		}
+
+		public function manual($data) {
+
+			$data = str_replace('<!--more-->', '', $data);
+			$data = str_replace('[amt_override]','[amt_override]<!--more-->', $data);
+
+			return $data;
 
 		}
 
@@ -95,6 +110,9 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 				$temp = substr($data, 0, $pos);
 				$temp_end = substr($data, $pos);
+				if(empty($temp_end) || trim($temp_end) == null || strlen($temp_end) <= 0)
+					return $data;
+
 				$data = $temp.'<!--more-->'.$temp_end;
 
 			}
@@ -126,6 +144,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 			$temp = substr($data, 0, $pos);
 			$temp_end = substr($data, $pos);
+			
+			if(empty($temp_end) || trim($temp_end) == null)
+				return $data;
+
 			$data = $temp.'<!--more-->'.$temp_end;
 
 			return $data;
@@ -140,8 +162,9 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 		public function validateOptions($input){
 
-			$start = $input;
 			
+			$start = $input;
+				
 			$input['messages'] = array(
 					'errors' => array(),
 					'notices' => array(),
@@ -163,6 +186,8 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				$input['messages']['notices'][] = 'Hard work and determination was put into this plugin. Please be kind, and credit me!';
 			}
 
+			$input['ignore_man_tag'] = (isset($input['ignore_man_tag']) && ((bool)$input['ignore_man_tag'] == true)) ? true : false;
+
 			$input['units'] = ((int)$input['units'] == 1) ? 1 : (((int)$input['units'] == 2) ? 2 : 3);
 
 			/*********************************
@@ -183,9 +208,7 @@ if(!defined('TW_AUTO_MORE_TAG')){
 			}			
 			
 			$input['break'] = (isset($input['break']) && (int)$input['break'] == 2) ? 2 : 1;
-
-			$input['credit'] = true;
-
+		
 			return $input;
 
 		}
@@ -200,10 +223,30 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 		}
 
-		#public function manualOverride($atts, $content = null, $code = null){
-		#	#NOT CURRENTLY WORKING
-		#	return '<!--more-->';
-		#}
+		private function updateAll() {
+		
+			$posts = get_posts(array(
+				'numberposts' => '-1',
+				'post_status' => 'publish',
+				'post_type' => 'post'
+			));
+
+			if(count($posts) > 0){
+				global $post;
+				foreach($posts as $post){
+					setup_postdata($post);
+					$post->post_content = self::addTag($post->post_content);
+					wp_update_post($post);			
+				}
+			}
+	
+		}
+
+		public function manualOverride($atts, $content = null, $code = null){
+			// We just want to make this tag disappear. Let's just make it go away now...
+			return null;
+		}
+
 	}
 	$tw_auto_more_tag = new tw_auto_more_tag();
 
@@ -211,6 +254,7 @@ if(!defined('TW_AUTO_MORE_TAG')){
 	add_action('admin_menu', array($tw_auto_more_tag, 'addPage'));
 	add_action('wp_footer', 'tw_auto_more_tag::doFooter');
 	add_filter('content_save_pre', 'tw_auto_more_tag::addTag', '1', 2);
-	#add_shortcode('amt_override', array($tw_auto_more_tag, 'manualOverride'));
-	define('TW_AUTO_MORE_TAG', '<div style="text-align: center;"><a href="http://travisweston.com" target="_blank" style="font-size: 8pt;">Auto More Tag powered by TravisWeston.com</a></div>');
+	add_shortcode('amt_override', array($tw_auto_more_tag, 'manualOverride'));
+	
+	define('TW_AUTO_MORE_TAG', '<div style="text-align: center;"><a href="http://travisweston.com" target="_blank" style="font-size: 7pt;">PHP/MySQL Components, WordPress Plugins, and Technology Opinions at TravisWeston.com</a></div>');
 }

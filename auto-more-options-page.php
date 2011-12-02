@@ -13,7 +13,11 @@ function hasWarnings($messages) {
 ?>
 <div class="wrap">
 	<h2>Auto More Tag by <a href="http://travisweston.com/">Travis Weston</a></h2>
-		<?php $options = get_option('tw_auto_more_tag'); ?>
+		<?php $options = get_option('tw_auto_more_tag'); 
+			if(isset($_GET['settings-updated']) && isset($options['auto_update']) && $options['auto_update'] == true){
+				$this->updateAll();
+			}
+		?>
 		<?php
 			if(hasErrors($options['messages']) || hasNotices($options['messages']) || hasWarnings($options['messages'])){
 		?>
@@ -89,8 +93,22 @@ function hasWarnings($messages) {
 			<div>
 				<label for="tw_auto_more_tag[credit_me]">Give Credit Where Credit is Due?</label>
 				<select id="tw_auto_more_tag[credit_me]" name="tw_auto_more_tag[credit_me]">
-					<option value="0" <?php echo (!isset($options['credit_me']) || $options['credit_me'] == false) ? 'selected="SELECTED" ' : null; ?>/>No
-					<option value="1" <?php echo (isset($options['credit_me']) && $options['credit_me'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
+					<option value="0" <?php echo (isset($options['credit_me']) && $options['credit_me'] == false) ? 'selected="SELECTED" ' : null; ?>/>No
+					<option value="1" <?php echo (!isset($options['credit_me']) || $options['credit_me'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
+				</select>
+			</div>
+			<div>
+				<label for="tw_auto_more_tag[auto_update]">Auto Update Posts On Settings Update?</label>
+				<select id="tw_auto_more_tag[auto_update]" name="tw_auto_more_tag[auto_update]">
+					<option value="1" <?php echo (!isset($options['auto_update']) || $options['auto_update'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
+					<option value="0" <?php echo (isset($options['auto_update']) && $options['auto_update'] == false) ? 'selected="SELECTED" ' : null;?>/>No
+				</select>
+			</div>
+			<div>
+				<label for="tw_auto_more_tag[ignore_man_tag]">Ignore Manually Inserted Tags?</label>
+				<select id="tw_auto_more_tag[ignore_man_tag]" name="tw_auto_more_tag[ignore_man_tag]">
+					<option value="1" <?php echo (!isset($options['ignore_man_tag']) || $options['ignore_man_tag'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
+					<option value="0" <?php echo (isset($options['ignore_man_tag']) && $options['ignore_man_tag'] == false) ? 'selected="SELECTED" ' : null;?>/>No
 				</select>
 			</div>
 			<p class="submit">
