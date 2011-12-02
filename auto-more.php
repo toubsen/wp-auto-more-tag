@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Auto More Tag
-Plugin URI: http://travisweston.com/auto-tag-wordpress-plugin
+Plugin URI: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpress-plugin/
 Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
 Author: Travis Weston
 Author URI: http://travisweston.com/
-Version: 2.1
+Version: 2.1.1
 */
 
 if(!defined('TW_AUTO_MORE_TAG')){

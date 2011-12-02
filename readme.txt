@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: anubisthejackle
-Donate link: http://travisweston.com/auto-tag-wordpress-plugin
+Donate link: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpress-plugin/
 Tags: more, tag, content, development, travis, weston
 Requires at least: 3.2.1
 Tested up to: 3.2.1
-Stable tag: 2.1
+Stable tag: 2.1.1
 
 Allows you to add a More tag to your post automatically upon publication.
 
@@ -33,6 +33,10 @@ If you do, you should probabley email tweston@travisweston.com, or visit http://
 1. This is the options page for Auto More Tag. See how simple and clean it looks? Sexy, right?
 
 == Changelog ==
+
+= 2.1.1 =
+
+Updated Donate and Plugin URLs
 
 = 2.1 =
 
