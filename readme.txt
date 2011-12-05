@@ -4,7 +4,7 @@ Donate link: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpr
 Tags: more, tag, content, development, travis, weston
 Requires at least: 3.2.1
 Tested up to: 3.2.1
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 
 Allows you to add a More tag to your post automatically upon publication.
 
@@ -33,6 +33,10 @@ If you do, you should probabley email tweston@travisweston.com, or visit http://
 1. This is the options page for Auto More Tag. See how simple and clean it looks? Sexy, right?
 
 == Changelog ==
+
+= 2.1.2 =
+
+A formatting error was causing the auto more tag to be placed in the midst of HTML tags. It now performs a better formatted check to verify that it is not in between the &lt; and &gt; tags. (<>)
 
 = 2.1.1 =
 

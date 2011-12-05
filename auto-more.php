@@ -5,7 +5,7 @@ Plugin URI: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpre
 Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
 Author: Travis Weston
 Author URI: http://travisweston.com/
-Version: 2.1.1
+Version: 2.1.2
 */
 
 if(!defined('TW_AUTO_MORE_TAG')){
@@ -92,6 +92,8 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 		public function byCharacter($data, $length, $breakOn) {
 
+			#$original = $data;
+			#$data = strip_tags($data);
 			if(strlen($data) > $length){
 
 				//Remove any old more tags.
@@ -99,6 +101,12 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				$data = str_replace('<!--more-->', '', $data);
 				$break = ($breakOn === 2) ? PHP_EOL : ' ';
 				$pos = strpos($data, $break, $length);
+				$posHTMLStart = strpos($data, '<', $pos);
+				$posHTMLEnd = strpos($data, '>', $pos);
+
+				if($pos < $posHTMLEnd)
+					$pos = $posHTMLEnd + 1;
+				
 				if($pos === false) {
 
 					$pos = strpos($data, '>', $length);
@@ -115,7 +123,8 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 				$data = $temp.'<!--more-->'.$temp_end;
 
-			}
+			}else
+				$data = $original;
 		
 			return $data;
 
@@ -129,6 +138,11 @@ if(!defined('TW_AUTO_MORE_TAG')){
 			$data = str_replace('<!--more-->', '', $data);
 			$break = ($breakOn === 2) ? PHP_EOL : ' ';
 			$pos = strpos($data, $break, $start);
+			$posHTMLStart = strpos($data, '<', $pos);
+			$posHTMLEnd = strpos($data, '>', $pos);
+
+			if($pos < $posHTMLEnd)
+				$pos = $posHTMLEnd + 1;
 
 			if($pos === false){
 
