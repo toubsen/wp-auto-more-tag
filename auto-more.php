@@ -123,8 +123,7 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 				$data = $temp.'<!--more-->'.$temp_end;
 
-			}else
-				$data = $original;
+			}
 		
 			return $data;
 
