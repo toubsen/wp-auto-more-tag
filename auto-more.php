@@ -5,7 +5,7 @@ Plugin URI: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpre
 Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
 Author: Travis Weston
 Author URI: http://travisweston.com/
-Version: 2.1.2
+Version: 3.0
 */
 
 if(!defined('TW_AUTO_MORE_TAG')){
@@ -57,6 +57,14 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 			}
 
+			// Sanitize the nasty characters out!
+
+			$data = str_replace(chr(160), chr(32), $data);
+			$data = str_replace(chr(194), '', $data);
+
+			if(strlen(strip_tags($data)) <= 0)
+				return $data;
+
 			switch($options['units']){
 				case 1:
 					
@@ -86,83 +94,120 @@ if(!defined('TW_AUTO_MORE_TAG')){
 		}
 
 		public function byWord($data, $length, $breakOn) {
-			// UNUSED IN CURRENT VERSION
+		
+			$break = ($breakOn == 2) ? PHP_EOL : ' ';
+			$data = str_replace('<!--more-->', '', $data);
+			$stripped_data = strip_tags($data);
+
+			$fullLength = strlen($data);
+
+			$strippedLocation = 0;
+			$wordCount = 0;
+			for($i = 0; $i < $fullLength; $i++){
+				if($stripped_data[$strippedLocation] != $data[$i]){
+					continue;
+				}
+
+				if($wordCount >= $length){
+					if($stripped_data[$strippedLocation] == $break){
+						$insertSpot = $i;
+						break;
+					}
+				}
+
+				if($stripped_data[$strippedLocation] == ' '){
+					$wordCount++;
+				}
+				
+				$strippedLocation++;
+
+			}
+
+			$start = trim(substr($data, 0, $insertSpot));
+			$end = trim(substr($data, $insertSpot));
+
+			if(strlen($start) > 0 && strlen($end) > 0)
+				$data = $start.'<!--more-->'.$end;
+
 			return $data;
+
 		}
 
 		public function byCharacter($data, $length, $breakOn) {
 
-			#$original = $data;
-			#$data = strip_tags($data);
-			if(strlen($data) > $length){
+			$break = ($breakOn == 2) ? PHP_EOL : ' ';
+			$data = str_replace('<!--more-->', '', $data);
+			$stripped_data = strip_tags($data);
 
-				//Remove any old more tags.
+			$fullLength = strlen($data);
 
-				$data = str_replace('<!--more-->', '', $data);
-				$break = ($breakOn === 2) ? PHP_EOL : ' ';
-				$pos = strpos($data, $break, $length);
-				$posHTMLStart = strpos($data, '<', $pos);
-				$posHTMLEnd = strpos($data, '>', $pos);
+			$strippedLocation = 0;
 
-				if($pos < $posHTMLEnd)
-					$pos = $posHTMLEnd + 1;
-				
-				if($pos === false) {
-
-					$pos = strpos($data, '>', $length);
-					if($pos === false){
-						$pos = $length;
-					}
-
+			for($i = 0; $i < $fullLength; $i++){
+				if($stripped_data[$strippedLocation] != $data[$i]){
+					continue;
 				}
 
-				$temp = substr($data, 0, $pos);
-				$temp_end = substr($data, $pos);
-				if(empty($temp_end) || trim($temp_end) == null || strlen($temp_end) <= 0)
-					return $data;
-
-				$data = $temp.'<!--more-->'.$temp_end;
+				if($strippedLocation >= $length){
+					if($stripped_data[$strippedLocation] == $break){
+						$insertSpot = $i;
+						break;
+					}
+				}
+				
+				$strippedLocation++;
 
 			}
-		
+
+			$start = trim(substr($data, 0, $insertSpot));
+			$end = trim(substr($data, $insertSpot));
+
+			if(strlen($start) > 0 && strlen($end) > 0)
+				$data = $start.'<!--more-->'.$end;
+
 			return $data;
 
 		}
 
 		public function byPercent($data, $length, $breakon) {
 
-			$lengthOfPost = strlen($data);
-			$start = $lengthOfPost * ($length / 100);
-
-			$data = str_replace('<!--more-->', '', $data);
+			$debug = null;
 			$break = ($breakOn === 2) ? PHP_EOL : ' ';
-			$pos = strpos($data, $break, $start);
-			$posHTMLStart = strpos($data, '<', $pos);
-			$posHTMLEnd = strpos($data, '>', $pos);
+			$data = str_replace('<!--more-->', '', $data);
+			/* Strip Tags, get length */
+			$stripped_data = strip_tags($data);
+			$lengthOfPost = strlen($stripped_data);
+			$fullLength = strlen($data);
 
-			if($pos < $posHTMLEnd)
-				$pos = $posHTMLEnd + 1;
+			/* Find location to insert */
 
-			if($pos === false){
+			$insert_location = $lengthOfPost * ($length / 100);
 
-				$pos = strpos($data, '>', $start);
+			/* iterate through post, look for differences between stripped and unstripped. If found, continue*/
 
-				if($pos === false){
+			$strippedLocation = 0;		
 
-					$pos = $start;
-
+			for($i = 0; $i < $fullLength; $i++){
+				if($stripped_data[$strippedLocation] != $data[$i]){
+					continue;
+				}
+		
+				if($strippedLocation >= $insert_location){
+					if($stripped_data[$strippedLocation] == $break){
+						$insertSpot = $i;
+						break;
+					}
 				}
 
+				$strippedLocation++;	
 			}
-
-			$temp = substr($data, 0, $pos);
-			$temp_end = substr($data, $pos);
 			
-			if(empty($temp_end) || trim($temp_end) == null)
-				return $data;
+			$start = trim(substr($data, 0, $insertSpot));
+			$end = trim(substr($data, $insertSpot));
 
-			$data = $temp.'<!--more-->'.$temp_end;
-
+			if(strlen($start) > 0 && strlen($end) > 0)
+				$data = $start.'<!--more-->'.$end;			
+			
 			return $data;
 
 		}
@@ -189,10 +234,6 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				$input['messages']['notices'][] = 'Quantity cannot be less than 0, and has been set to 0.';
 			}
 
-			if($input['units'] == 2){
-				$input['messages']['errors'][] = 'This version does not include capabilities for Word seperation. Units has been defaulted to Characters.';
-			}
-
 			$input['credit_me'] = (isset($input['credit_me']) && ((bool)$input['credit_me'] == true)) ? true : false;
 
 			if($input['credit_me'] === false){
@@ -203,22 +244,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 			$input['units'] = ((int)$input['units'] == 1) ? 1 : (((int)$input['units'] == 2) ? 2 : 3);
 
-			/*********************************
-			* THIS IS TEMPORARY
-			* ONLY HERE UNTIL WORD COUNT IS IMPLEMENTED
-			**********************************/
-			if($input['units'] == 2){
-				$input['units'] = 1;
-			}
-
 			if($input['units'] == 3 && $input['quantity'] > 100){
 				$input['messages']['notices'][] = 'While using Percentage breaking, you cannot us a number larger than 100%. This field has been reset to 50%.';
 				$input['quantity'] = 50;
-			}
-
-			if($input['units'] == 1){
-				$input['messages']['warnings'][] = 'Using characters is not suggested. The more tag is added to the unfiltered HTML of the post, which means that this tag could cause your HTML to unvalidate.';
-			}			
+			}		
 			
 			$input['break'] = (isset($input['break']) && (int)$input['break'] == 2) ? 2 : 1;
 		
