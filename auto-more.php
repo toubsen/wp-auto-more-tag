@@ -5,7 +5,7 @@ Plugin URI: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpre
 Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
 Author: Travis Weston
 Author URI: http://travisweston.com/
-Version: 3.0
+Version: 3.1
 */
 
 if(!defined('TW_AUTO_MORE_TAG')){
@@ -43,9 +43,13 @@ if(!defined('TW_AUTO_MORE_TAG')){
 		}
 
 		public static function addTag($data, $arr = array()){
-
+			global $post;
 			$options = get_option('tw_auto_more_tag');
-					
+
+			if($post->post_type != 'post' && $options['set_pages'] != true){
+				$data = str_replace('<!--more-->', '', $data);
+				return $data;
+			}
 			$length = $options['quantity'];
 			$breakOn = $options['break'];
 
@@ -123,10 +127,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 			}
 
-			$start = trim(substr($data, 0, $insertSpot));
-			$end = trim(substr($data, $insertSpot));
+			$start = substr($data, 0, $insertSpot);
+			$end = substr($data, $insertSpot);
 
-			if(strlen($start) > 0 && strlen($end) > 0)
+			if(strlen(trim($start)) > 0 && strlen(trim($end)) > 0)
 				$data = $start.'<!--more-->'.$end;
 
 			return $data;
@@ -159,10 +163,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 
 			}
 
-			$start = trim(substr($data, 0, $insertSpot));
-			$end = trim(substr($data, $insertSpot));
+			$start = substr($data, 0, $insertSpot);
+			$end = substr($data, $insertSpot);
 
-			if(strlen($start) > 0 && strlen($end) > 0)
+			if(strlen(trim($start)) > 0 && strlen(trim($end)) > 0)
 				$data = $start.'<!--more-->'.$end;
 
 			return $data;
@@ -202,10 +206,10 @@ if(!defined('TW_AUTO_MORE_TAG')){
 				$strippedLocation++;	
 			}
 			
-			$start = trim(substr($data, 0, $insertSpot));
-			$end = trim(substr($data, $insertSpot));
+			$start = substr($data, 0, $insertSpot);
+			$end = substr($data, $insertSpot);
 
-			if(strlen($start) > 0 && strlen($end) > 0)
+			if(strlen(trim($start)) > 0 && strlen(trim($end)) > 0)
 				$data = $start.'<!--more-->'.$end;			
 			
 			return $data;
