@@ -3,7 +3,7 @@ Contributors: anubisthejackle, toubsen
 Donate link: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpress-plugin/
 Tags: more, tag, content, development, travis, weston
 Requires at least: 3.2.1
-Tested up to: 3.4
+Tested up to: 3.5.2
 Stable tag: 3.2
 
 Allows you to add a More tag to your post automatically upon publication.
