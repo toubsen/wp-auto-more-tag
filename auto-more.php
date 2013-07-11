@@ -2,10 +2,10 @@
 
 /*
   Plugin Name: Auto More Tag
-  Plugin URI: http://travisweston.com/portfolio/wordpress-plugins/auto-tag-wordpress-plugin/
+  Plugin URI: https://github.com/toubsen/wp-auto-more-tag
   Description: Automatically add a More tag to your posts upon publication. No longer are you required to spend your time figuring out the perfect position for the more tag, you can now set a rule and this plugin will--to the best of it's abilities--add a proper more tag at or at the nearest non-destructive location.
-  Author: Travis Weston
-  Author URI: http://travisweston.com/
+  Author: Travis Weston, Tobias Vogel
+  Author URI: https://github.com/anubisthejackle
   Version: 3.1
  */
 
@@ -25,11 +25,7 @@ if (!defined('TW_AUTO_MORE_TAG')) {
 		}
 
 		public static function doFooter() {
-			$options = get_option('tw_auto_more_tag');
-
-			if (isset($options['credit_me']) && ((bool) $options['credit_me'] == true)) {
-				echo TW_AUTO_MORE_TAG;
-			}
+			// Do nothing.
 		}
 
 		private static function doLog($message) {
@@ -214,12 +210,6 @@ if (!defined('TW_AUTO_MORE_TAG')) {
 				$input['messages']['notices'][] = 'Quantity cannot be less than 0, and has been set to 0.';
 			}
 
-			$input['credit_me'] = (isset($input['credit_me']) && ((bool) $input['credit_me'] == true)) ? true : false;
-
-			if ($input['credit_me'] === false) {
-				$input['messages']['notices'][] = 'Hard work and determination was put into this plugin. Please be kind, and credit me!';
-			}
-
 			$input['ignore_man_tag'] = (isset($input['ignore_man_tag']) && ((bool) $input['ignore_man_tag'] == true)) ? true : false;
 
 			$input['units'] = ((int) $input['units'] == 1) ? 1 : (((int) $input['units'] == 2) ? 2 : 3);
@@ -276,5 +266,5 @@ if (!defined('TW_AUTO_MORE_TAG')) {
 	add_filter('content_save_pre', 'tw_auto_more_tag::addTag', '1', 2);
 	add_shortcode('amt_override', array($tw_auto_more_tag, 'manualOverride'));
 
-	define('TW_AUTO_MORE_TAG', '<div style="text-align: center;"><a href="http://travisweston.com" target="_blank" style="font-size: 7pt;">PHP/MySQL Components, WordPress Plugins, and Technology Opinions at TravisWeston.com</a></div>');
+	define('TW_AUTO_MORE_TAG', true);
 }
