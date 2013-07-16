@@ -77,7 +77,7 @@ function hasWarnings($messages) {
 			</div>
 			<div>
 				<label for="tw_auto_more_tag[units]">Characters, Words or Percent of Post?</label>
-				<select name="tw_auto_more_tag[units]" id="tw_auto_more_tag[units]">
+				<select id="tw_auto_more_tag[units]" name="tw_auto_more_tag[units]">
 					<option value="1" <?php echo ($options['units'] == 1 || !isset($options['units'])) ? 'selected="SELECTED" ' : null; ?>/>Characters
 					<option value="2" <?php echo ($options['units'] == 2) ? 'selected="SELECTED" ' : null; ?>/>Words
 					<option value="3" <?php echo ($options['units'] == 3) ? 'selected="SELECTED" ' : null; ?>/>Percent
@@ -91,17 +91,10 @@ function hasWarnings($messages) {
 				</select>
 			</div>
 			<div>
-				<label for="tw_auto_more_tag[credit_me]">Give Credit Where Credit is Due?</label>
-				<select id="tw_auto_more_tag[credit_me]" name="tw_auto_more_tag[credit_me]">
-					<option value="0" <?php echo (isset($options['credit_me']) && $options['credit_me'] == false) ? 'selected="SELECTED" ' : null; ?>/>No
-					<option value="1" <?php echo (!isset($options['credit_me']) || $options['credit_me'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
-				</select>
-			</div>
-			<div>
 				<label for="tw_auto_more_tag[auto_update]">Auto Update Posts On Settings Update?</label>
 				<select id="tw_auto_more_tag[auto_update]" name="tw_auto_more_tag[auto_update]">
-					<option value="1" <?php echo (!isset($options['auto_update']) || $options['auto_update'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
-					<option value="0" <?php echo (isset($options['auto_update']) && $options['auto_update'] == false) ? 'selected="SELECTED" ' : null;?>/>No
+					<option value="1" <?php echo (isset($options['auto_update']) && $options['auto_update'] == true) ? 'selected="SELECTED" ' : null;?>/>Yes
+					<option value="0" <?php echo (!isset($options['auto_update']) || $options['auto_update'] == false) ? 'selected="SELECTED" ' : null;?>/>No
 				</select>
 			</div>
 			<div>
@@ -121,27 +114,6 @@ function hasWarnings($messages) {
 			<p class="submit">
 				<input type="submit" class="button-primary" value="<?php _e('Update Auto More Tag Settings'); ?>" />
 			</p>
-		</form>
-	</div>
-	<hr style="width: 80%;" />
-	<div>
-		<?php
-		$donateHeaders = array(
-			'Like this plugin? Please donate!',
-			'Help buy diapers for my children!',
-			'I have two kids...buy me beer!',
-			'Auto More ... Donations?',
-			'[Insert Witty Statement That Will Get You To Donate Here]'
-		);
-		?>
-		<h2><?php echo $donateHeaders[array_rand($donateHeaders)]; ?></h2>
-		<p>Auto More Tag is a free plugin. You could even call it a work of love. But to continue development on such projects as Auto More Tag, I need to be able to justify it to my pregnant wife.</p>
-		<p>Help the diaper fund?</p>
-		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-			<input type="hidden" name="cmd" value="_s-xclick">
-			<input type="hidden" name="hosted_button_id" value="CCZRA8LMZDHCW">
-			<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-			<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 		</form>
 	</div>
 </div>
