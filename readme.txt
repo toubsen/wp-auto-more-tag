@@ -25,10 +25,10 @@ paragraphs off without cause.
 == Frequently Asked Questions ==
 
 = Where to ask questions about usage? =
-Head to the [Wordpress plugins forum] (http://wordpress.org/plugins/auto-more-tag/)
+Head to the Wordpress plugins forum: http://wordpress.org/plugins/auto-more-tag/
 
 = Where to send code issues / bugfixes? =
-Head to the [Github project's issue tracker] (https://github.com/toubsen/wp-auto-more-tag/issues)
+Head to the Github project's issue tracker: https://github.com/toubsen/wp-auto-more-tag/issues
 
 == Screenshots ==
 
