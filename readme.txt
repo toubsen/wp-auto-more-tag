@@ -41,7 +41,6 @@ Head to the [Github project's issue tracker](https://github.com/toubsen/wp-auto-
 
 = 3.2.1 =
 * Version bump in php files + readme for wordpress auto update
-
 = 3.2 =
 * Made the plugin multibyte aware / safe (UTF-8)
 * Removed donate / credit stuff
