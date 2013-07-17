@@ -73,7 +73,7 @@ function hasWarnings($messages) {
 			<?php settings_fields('tw_auto_more_tag'); ?>
 			<div>
 				<label for="tw_auto_more_tag[quantity]">Add More Tag after:</label>
-				<input name="tw_auto_more_tag[quantity]" id="tw_auto_more_tag[quantity]" value="<?php echo isset($options['quantity']) ? $options['quantity'] : 200; ?>" />
+				<input id="tw_auto_more_tag[quantity]" name="tw_auto_more_tag[quantity]" value="<?php echo isset($options['quantity']) ? $options['quantity'] : 200; ?>" />
 			</div>
 			<div>
 				<label for="tw_auto_more_tag[units]">Characters, Words or Percent of Post?</label>
