@@ -83,6 +83,7 @@ if (!defined('TW_AUTO_MORE_TAG')) {
 
 			$strippedLocation = 0;
 			$wordCount = 0;
+			$insertSpot = $fullLength;
 			for ($i = 0; $i < $fullLength; $i++) {
 				if (mb_substr($stripped_data, $strippedLocation, 1) != mb_substr($data, $i, 1)) {
 					continue;
@@ -121,6 +122,7 @@ if (!defined('TW_AUTO_MORE_TAG')) {
 
 			$strippedLocation = 0;
 
+			$insertSpot = $fullLength;
 			for ($i = 0; $i < $fullLength; $i++) {
 				if (mb_substr($stripped_data, $strippedLocation, 1) != mb_substr($data, $i, 1)) {
 					continue;
@@ -161,6 +163,7 @@ if (!defined('TW_AUTO_MORE_TAG')) {
 			/* iterate through post, look for differences between stripped and unstripped. If found, continue */
 			$strippedLocation = 0;
 
+			$insertSpot = $fullLength;
 			for ($i = 0; $i < $fullLength; $i++) {
 				if (mb_substr($stripped_data, $strippedLocation, 1) != mb_substr($data, $i, 1)) {
 					continue;
