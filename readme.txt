@@ -3,7 +3,7 @@ Contributors: anubisthejackle, toubsen
 Tags: more, tag, content, development, travis, weston
 Requires at least: 3.2.1
 Tested up to: 3.5.2
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 
 Allows you to add a More tag to your post automatically upon publication.
 
@@ -35,6 +35,9 @@ Head to the [Github project's issue tracker](https://github.com/toubsen/wp-auto-
 1. This is the options page for Auto More Tag.
 
 == Changelog ==
+
+= 3.2.2 = 
+* Integrated fix for repeated content on short posts
 
 = 3.2.1 =
 * Version bump in php files + readme for wordpress auto update
