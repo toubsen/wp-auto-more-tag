@@ -2,7 +2,7 @@
 Contributors: anubisthejackle, toubsen
 Tags: more, tag, content, development, travis, weston
 Requires at least: 3.2.1
-Tested up to: 3.5.2
+Tested up to: 3.8
 Stable tag: 3.2.2
 
 Allows you to add a More tag to your post automatically upon publication.
